@@ -1,4 +1,6 @@
 <?php  
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 	if($_POST['method']== 'optitem'){
 		$conn = mysqli_connect("127.0.0.1", "root", "", "ahp");	
 		if($_POST['jnsitem'] != 'All'){
@@ -16,6 +18,26 @@
 
 	}elseif($_POST['method']=='ProcessData'){
 		$conn = mysqli_connect("127.0.0.1", "root", "", "ahp");	
+
+
+
+		// echo mysqli_num_rows($exec);
+		// $data = array();
+		//  while ($fetch = mysqli_fetch_array($exec,MYSQLI_ASSOC)) {
+		//  	$data[] = $fetch;
+		//  }
+		// for ($i=1; $i <= mysqli_num_rows($exec) ; $i++) { 
+		//  	$fetch = mysqli_fetch_array($exec,MYSQLI_ASSOC);
+		//  	// echo '<pre>'.print_r($data,true).'</pre>';
+		//  	$data[$i][] = $fetch['kode_supplier'];
+		//  	// $data[$i][] = $fetch['harga'];
+		//  	// echo $i;
+		// }
+		// echo '<pre>'.print_r($data,true).'</pre>';	
+
+
+		$List = array();
+
 		if($_POST['jnsitem'] == 'All'){
 			$filterjnsitem = "where jenisitem <> '' and ";
 		}else{
@@ -38,20 +60,25 @@
 		 )B	".$filter."";
 
 		$exec = mysqli_query($conn,$query);
+		
+
 		$data = "
 			<table id='example1' class='table table-bordered table-striped' >
 				<tr>
-					<th>Kode Supplier</th>
-					<th>Nama Supplier</th>
-					<th>Kode Item</th>
-					<th>Nama Item</th>
-					<th>Jenis Item</th>
-					<th>Harga</th>
-					<th>Qty</th>
-					<th>Total</th>
-				</tr>
 			";
-		while ($fetch = mysqli_fetch_array($exec,MYSQLI_ASSOC)) {
+
+		while ($fetch1 = mysqli_fetch_array($exec,MYSQLI_ASSOC)) {
+				$List[] = $fetch1;
+		}	
+
+		foreach ($List[0] as $key => $value) {
+				$data .= "<th>".$key."</th>";
+
+		}
+		$data .="</tr>";		
+		// while ($fetch = mysqli_fetch_array($exec,MYSQLI_ASSOC)) {
+			foreach ($List as $fetch) {
+							# code...
 				$data .= "
 					<tr>
 						<td>".$fetch['kode_supplier']."</td> 
@@ -67,6 +94,7 @@
 			}	
 			$data .= '<table>';
 			echo $data;
+			// echo '<pre>'.print_r($List,true).'</pre>';
 		die();
 	}
 ?>
